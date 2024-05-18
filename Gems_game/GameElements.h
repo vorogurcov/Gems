@@ -26,7 +26,7 @@ namespace GameElements
 	
 
 
-	class Square:sf::RectangleShape
+	class Square:public sf::RectangleShape
 	{
 	private:
 		Bonus* _bns;
