@@ -131,10 +131,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameElements.cpp" />
+    <ClCompile Include="GameFunctions.cpp" />
     <ClCompile Include="Gems_game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameElements.h" />
+    <ClInclude Include="GameFunctions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
