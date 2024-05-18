@@ -6,8 +6,8 @@ namespace ge = GameElements;
 int main()
 {
     srand(time(0));
-    sf::RenderWindow window(sf::VideoMode(800, 800), "Gems");
-    bool isChanged = false;
+    sf::RenderWindow window(sf::VideoMode(800, 800), "Gems",sf::Style::Close);
+    bool isChanged = true;
 
 
 
@@ -27,14 +27,20 @@ int main()
             }
 
         }
-        window.clear(sf::Color::Black);
 
-        std::vector<std::vector<ge::Square>> GameField = ge::GenerateGameField();
+        if (isChanged == true)
+        {
+            window.clear(sf::Color::Black);
 
-        ge::DrawGameField(window,GameField);
+            std::vector<std::vector<ge::Square>> GameField = ge::GenerateGameField();
 
+            ge::DrawGameField(window, GameField);
+
+            window.display();
+
+            isChanged = false;
+        }
         
-        window.display();
     }
 
     return 0;
