@@ -86,7 +86,18 @@ namespace GameElements
         return (First_x == Second_x) && (First_y == Second_y) ? true : false;
     }
 
-    
+    void DeleteCompletely( std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
+    {
+        std::vector<sf::Vector2i> vec;
+        int size = 0;
+        do
+        {
+            size = vec.size();
+            FindSquaresToDelete(vec, GameField, FirstSquareX, FirstSquareY);
+        } while (vec.size() != size);
+
+        DeleteSquares(GameField, vec);
+    }
 
     void ReplaceSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
     {
@@ -110,6 +121,10 @@ namespace GameElements
                         if (isNear(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                         {
                             swap_colors(GameField[FirstSquareX][FirstSquareY], GameField[SecondSquareX][SecondSquareY]);
+
+                            DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
+                            DeleteCompletely(GameField, SecondSquareX, SecondSquareY);
+
                             wasClicked = false;
                         }
                         else if (isEqual(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
