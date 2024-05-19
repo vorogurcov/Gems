@@ -122,4 +122,120 @@ namespace GameElements
             }
         }
     }
+
+    void clear(std::vector<sf::Vector2i>& q)
+    {
+        std::vector<sf::Vector2i> empty;
+        std::swap(q, empty);
+    }
+
+    bool isInVector(std::vector<sf::Vector2i>& q, sf::Vector2i& vec)
+    {
+        std::vector<sf::Vector2i> tempvec(q);
+        int size = q.size();
+        for (size_t i = 0; i < size; i++)
+        {
+            if (tempvec.front() == vec)
+                return true;
+            tempvec.erase(tempvec.begin());
+        }
+        return false;
+    }
+
+    void FindSquaresToDelete(std::vector<sf::Vector2i>& DeletedSquares, std::vector<std::vector<Square>>& GameField, int SquareX, int SquareY)
+    {
+        int CurSize = DeletedSquares.size();
+
+        std::vector<sf::Vector2i> tempq(DeletedSquares);
+
+        for (size_t j = 0; CurSize == 0 ? j <= CurSize : j < CurSize; j++)
+        {
+            if (CurSize == 0)
+                ;
+            else
+            {
+                sf::Vector2i vec = tempq.front();
+                tempq.erase(tempq.begin());
+                SquareX = vec.x;
+                SquareY = vec.y;
+            }
+
+            for (int i = SquareY; i < GameFieldSize; i++)
+            {
+                sf::Vector2i* indexes = new sf::Vector2i(SquareX, i);
+                if (GameField[SquareX][i].getFillColor() == GameField[SquareX][SquareY].getFillColor() &&
+                    !isInVector(DeletedSquares, *indexes))
+                    DeletedSquares.push_back(*indexes);
+                else if (GameField[SquareX][i].getFillColor() == GameField[SquareX][SquareY].getFillColor())
+                    ;
+                else
+                    break;
+            }
+
+            for (int i = SquareY; i >= 0; i--)
+            {
+                sf::Vector2i* indexes = new sf::Vector2i(SquareX, i);
+                if (GameField[SquareX][i].getFillColor() == GameField[SquareX][SquareY].getFillColor()
+                    && !isInVector(DeletedSquares, *indexes))
+                    DeletedSquares.push_back(*indexes);
+                else if (GameField[SquareX][i].getFillColor() == GameField[SquareX][SquareY].getFillColor())
+                    ;
+                else
+                    break;
+            }
+
+            int RowDeletedElemCount = DeletedSquares.size() - CurSize;
+            if (RowDeletedElemCount < 3 && CurSize == 0)
+                clear(DeletedSquares), RowDeletedElemCount = 0;
+            /*else if (RowDeletedElemCount < 3 && CurSize != 0)
+                ;*/
+            else
+                RowDeletedElemCount = DeletedSquares.size();
+
+            for (int i = SquareX; i < GameFieldSize; i++)
+            {
+                sf::Vector2i* indexes = new sf::Vector2i(i, SquareY);
+                if (GameField[i][SquareY].getFillColor() == GameField[SquareX][SquareY].getFillColor() &&
+                    !isInVector(DeletedSquares, *indexes))
+                    DeletedSquares.push_back(*indexes);
+                else if (GameField[i][SquareY].getFillColor() == GameField[SquareX][SquareY].getFillColor())
+                    ;
+                else
+                    break;
+            }
+
+            for (int i = SquareX; i >= 0; i--)
+            {
+                sf::Vector2i* indexes = new sf::Vector2i(i, SquareY);
+                if (GameField[i][SquareY].getFillColor() == GameField[SquareX][SquareY].getFillColor() &&
+                    !isInVector(DeletedSquares, *indexes))
+                    DeletedSquares.push_back(*indexes);
+                else if (GameField[i][SquareY].getFillColor() == GameField[SquareX][SquareY].getFillColor())
+                    ;
+                else
+                    break;
+            }
+            int ColDeletedElemCount = DeletedSquares.size() - RowDeletedElemCount;
+            if (ColDeletedElemCount < 3 && CurSize == 0)
+            {
+                for (size_t i = 0; i < ColDeletedElemCount; i++)
+                {
+                    DeletedSquares.pop_back();
+                }
+            }
+        }
+    }
+
+    void DeleteSquares(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& SqToDelete)
+    {
+        int size = SqToDelete.size();
+        std::vector<sf::Vector2i> tempq(SqToDelete);
+        for (size_t i = 0; i < size; i++)
+        {
+            sf::Vector2i vec = tempq.front();
+            tempq.erase(tempq.begin());
+            GameField[vec.x][vec.y].setFillColor(sf::Color::Black);
+        }
+    }
+
 }

@@ -1,10 +1,7 @@
 #include "GameElements.h"
 #include "GameFunctions.h"
 
-
-
 namespace ge = GameElements;
-
 
 
 int main()
@@ -34,6 +31,16 @@ int main()
                     int SquareX = event.mouseButton.x / 80;
                     int SquareY = event.mouseButton.y / 80;
                     ReplaceSquares(window,GameField, SquareX, SquareY);
+
+                    std::vector<sf::Vector2i> vec;
+                    int size = 0;
+                    do
+                    {
+                        size = vec.size();
+                        FindSquaresToDelete(vec, GameField, SquareX, SquareY);
+                    } while (vec.size() != size);
+
+                    DeleteSquares(GameField,vec);
                     isChanged = true;
                 }
 

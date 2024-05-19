@@ -20,6 +20,11 @@ namespace GameElements
 	bool isEqual(int const First_x, int const First_y, int const Second_x, int const Second_y);
 	bool isNear(int const First_x, int const First_y, int const Second_x, int const Second_y);
 	void swap_colors(Square& s1, Square& s2);
+	void clear(std::vector<sf::Vector2i>& q);
+	bool isInVector(std::vector<sf::Vector2i>& q, sf::Vector2i& vec);
+	void FindSquaresToDelete(std::vector<sf::Vector2i>& DeletedSquares, std::vector<std::vector<Square>>& GameField, int SquareX, int SquareY);
+	void DeleteSquares(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& SqToDelete);
+
 }
 
 
