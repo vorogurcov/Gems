@@ -2,6 +2,7 @@
 #include "GameFunctions.h"
 
 namespace ge = GameElements;
+    
 
 
 int main()
@@ -13,10 +14,12 @@ int main()
     std::vector<std::vector<ge::Square>> GameField = ge::GenerateGameField();;
 
     sf::RenderWindow window(sf::VideoMode(800, 800), "Gems", sf::Style::Close);
+   
+    
 
     while (window.isOpen())
     {
-        
+        std::vector<sf::Vector2i> DeletedSquares;
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -33,7 +36,10 @@ int main()
                     int SquareY = event.mouseButton.y / 80;
                     if (GameField[SquareX][SquareY].getFillColor() != sf::Color::Black)
                     {
-                        ReplaceSquares(window, GameField, SquareX, SquareY);
+                        DeletedSquares = ReplaceAndDeleteSquares(window, GameField, SquareX, SquareY);
+                        
+                        std::sort(DeletedSquares.begin(), DeletedSquares.end(), ge::compareByY);
+
                         isChanged = true;
                     }
                    
@@ -48,10 +54,18 @@ int main()
             window.clear(sf::Color::Black);
 
             ge::DrawGameField(window, GameField);
-           
+            
             window.display();
+            sf::Time tm(sf::seconds(1));
+            sf::sleep(tm);
 
             isChanged = false;
+
+            if (DeletedSquares.size() != 0)
+            {
+                FillDeletedSquares(DeletedSquares,GameField);
+                isChanged = true;
+            }
         }
 
 
