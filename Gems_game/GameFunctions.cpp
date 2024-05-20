@@ -101,6 +101,7 @@ namespace GameElements
 
     void ReplaceSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
     {
+
         bool wasClicked = true;
         while (wasClicked)
         {
@@ -115,15 +116,21 @@ namespace GameElements
                 {
                     if (isClickedOnSquare(event.mouseButton.x, event.mouseButton.y))
                     {
+                        
                         int SecondSquareX = event.mouseButton.x / 80;
                         int SecondSquareY = event.mouseButton.y / 80;
+
+                        if (GameField[SecondSquareX][SecondSquareY].getFillColor() == sf::Color::Black)
+                            return;
 
                         if (isNear(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                         {
                             swap_colors(GameField[FirstSquareX][FirstSquareY], GameField[SecondSquareX][SecondSquareY]);
 
-                            DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
-                            DeleteCompletely(GameField, SecondSquareX, SecondSquareY);
+                            if(GameField[FirstSquareX][FirstSquareY].getFillColor() != sf::Color::Black)
+                                DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
+                            if (GameField[SecondSquareX][SecondSquareY].getFillColor() != sf::Color::Black)
+                                DeleteCompletely(GameField, SecondSquareX, SecondSquareY);
 
                             wasClicked = false;
                         }
