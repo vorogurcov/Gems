@@ -28,10 +28,15 @@ int main()
             {
                 if (ge::isClickedOnSquare(event.mouseButton.x, event.mouseButton.y))
                 {
+                    
                     int SquareX = event.mouseButton.x / 80;
                     int SquareY = event.mouseButton.y / 80;
-                    ReplaceSquares(window,GameField, SquareX, SquareY);
-                    isChanged = true;
+                    if (GameField[SquareX][SquareY].getFillColor() != sf::Color::Black)
+                    {
+                        ReplaceSquares(window, GameField, SquareX, SquareY);
+                        isChanged = true;
+                    }
+                   
                 }
 
             }
