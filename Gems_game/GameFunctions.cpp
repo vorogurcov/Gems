@@ -71,6 +71,13 @@ namespace GameElements
         s1.setFillColor(color);
     }
 
+    void swap_bonuses(Square& s1, Square& s2)
+    {
+        Bonus* temp = s1.GetBonus();
+        s1.SetBonus(s2.GetBonus());
+        s2.SetBonus(temp);
+    }
+
     bool isNear(int const First_x, int const First_y, int const Second_x, int const Second_y)
     {
         int delta_x = First_x - Second_x;
@@ -126,7 +133,8 @@ namespace GameElements
 
                         if (isNear(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                         {
-                            swap_colors(GameField[FirstSquareX][FirstSquareY], GameField[SecondSquareX][SecondSquareY]);
+                            sf::Vector2i pos1(FirstSquareX,FirstSquareY), pos2(SecondSquareX,SecondSquareY);
+                            SwapSquares(GameField, pos1, pos2);
                             std::vector<sf::Vector2i> vec1, vec2;
                             if(GameField[FirstSquareX][FirstSquareY].getFillColor() != sf::Color::Black)
                                 vec1 = DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
@@ -260,7 +268,7 @@ namespace GameElements
         {
             sf::Vector2i vec = tempq.front();
             tempq.erase(tempq.begin());
-            GameField[vec.x][vec.y].setFillColor(sf::Color::Black);
+            DestroySquare(GameField,vec);
         }
         
     }
@@ -283,9 +291,11 @@ namespace GameElements
                     break;
                 else if (GameField[el.x][i].getFillColor() != sf::Color::Black)
                 {
-                    swap_colors(GameField[el.x][el.y], GameField[el.x][i]);
+                    
+                 
                     sf::Vector2i CurPoint(el.x, el.y);
                     sf::Vector2i NewPoint(el.x, i);
+                    SwapSquares(GameField,CurPoint, NewPoint);
                     vec.insert(std::lower_bound(vec.begin(), vec.end(), NewPoint, compareByY), NewPoint);
                     break;
                 }
@@ -296,4 +306,15 @@ namespace GameElements
     }
 
 
+    void DestroySquare(std::vector<std::vector<Square>>& GameField,sf::Vector2i& pos)
+    {
+        GameField[pos.x][pos.y].setFillColor(sf::Color::Black);
+        GameField[pos.x][pos.y].SetBonus(NULL);
+    }
+
+    void SwapSquares(std::vector<std::vector<Square>>& GameField, sf::Vector2i& pos1, sf::Vector2i& pos2)
+    {
+        swap_colors(GameField[pos1.x][pos1.y], GameField[pos2.x][pos2.y]);
+        swap_bonuses(GameField[pos1.x][pos1.y], GameField[pos2.x][pos2.y]);
+    }
 }

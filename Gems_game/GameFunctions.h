@@ -26,6 +26,9 @@ namespace GameElements
 	void DeleteSquares(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& SqToDelete);
 	bool compareByY(sf::Vector2i const& a, sf::Vector2i const& b);
 	void FillDeletedSquares(std::vector<sf::Vector2i>& vec, std::vector<std::vector<Square>>& GameField);
+	void DestroySquare(std::vector<std::vector<Square>>& GameField, sf::Vector2i& pos);
+	void SwapSquares(std::vector<std::vector<Square>>& GameField, sf::Vector2i& pos1, sf::Vector2i& pos2);
+	void swap_bonuses(Square& s1, Square& s2);
 }
 
 
