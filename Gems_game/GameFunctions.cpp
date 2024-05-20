@@ -265,4 +265,35 @@ namespace GameElements
         
     }
 
+
+    bool compareByY(sf::Vector2i const& a, sf::Vector2i const& b) {
+        return a.y > b.y;
+    }
+
+
+    void FillDeletedSquares(std::vector<sf::Vector2i>& vec, std::vector<std::vector<Square>>& GameField)
+    {
+        for (auto it = vec.begin(); it != vec.end();)
+        {
+            auto& el = *it;
+
+            for (int i = el.y; i >= 0; i--)
+            {
+                if (i < 0)
+                    break;
+                else if (GameField[el.x][i].getFillColor() != sf::Color::Black)
+                {
+                    swap_colors(GameField[el.x][el.y], GameField[el.x][i]);
+                    sf::Vector2i CurPoint(el.x, el.y);
+                    sf::Vector2i NewPoint(el.x, i);
+                    vec.insert(std::lower_bound(vec.begin(), vec.end(), NewPoint, compareByY), NewPoint);
+                    break;
+                }
+
+            }
+            it = vec.erase(vec.begin());
+        }
+    }
+
+
 }

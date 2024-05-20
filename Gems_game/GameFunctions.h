@@ -24,7 +24,8 @@ namespace GameElements
 	bool isInVector(std::vector<sf::Vector2i>& q, sf::Vector2i& vec);
 	void FindSquaresToDelete(std::vector<sf::Vector2i>& DeletedSquares, std::vector<std::vector<Square>>& GameField, int SquareX, int SquareY);
 	void DeleteSquares(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& SqToDelete);
-
+	bool compareByY(sf::Vector2i const& a, sf::Vector2i const& b);
+	void FillDeletedSquares(std::vector<sf::Vector2i>& vec, std::vector<std::vector<Square>>& GameField);
 }
 
 
