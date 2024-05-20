@@ -16,7 +16,7 @@ namespace GameElements
 	sf::Color GetRandomColor();
 	std::vector<std::vector<Square>> GenerateGameField();
 	void DrawGameField(sf::RenderWindow& window, std::vector<std::vector<Square>> const& elements);
-	void ReplaceSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY);
+	std::vector<sf::Vector2i> ReplaceAndDeleteSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY);
 	bool isEqual(int const First_x, int const First_y, int const Second_x, int const Second_y);
 	bool isNear(int const First_x, int const First_y, int const Second_x, int const Second_y);
 	void swap_colors(Square& s1, Square& s2);

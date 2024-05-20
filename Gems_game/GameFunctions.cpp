@@ -86,7 +86,7 @@ namespace GameElements
         return (First_x == Second_x) && (First_y == Second_y) ? true : false;
     }
 
-    void DeleteCompletely( std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
+    std::vector<sf::Vector2i> DeleteCompletely( std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
     {
         std::vector<sf::Vector2i> vec;
         int size = 0;
@@ -97,9 +97,10 @@ namespace GameElements
         } while (vec.size() != size);
 
         DeleteSquares(GameField, vec);
+        return vec;
     }
 
-    void ReplaceSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
+    std::vector<sf::Vector2i> ReplaceAndDeleteSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
     {
 
         bool wasClicked = true;
@@ -121,18 +122,21 @@ namespace GameElements
                         int SecondSquareY = event.mouseButton.y / 80;
 
                         if (GameField[SecondSquareX][SecondSquareY].getFillColor() == sf::Color::Black)
-                            return;
+                            return *new std::vector<sf::Vector2i>(0);
 
                         if (isNear(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                         {
                             swap_colors(GameField[FirstSquareX][FirstSquareY], GameField[SecondSquareX][SecondSquareY]);
-
+                            std::vector<sf::Vector2i> vec1, vec2;
                             if(GameField[FirstSquareX][FirstSquareY].getFillColor() != sf::Color::Black)
-                                DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
+                                vec1 = DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
                             if (GameField[SecondSquareX][SecondSquareY].getFillColor() != sf::Color::Black)
-                                DeleteCompletely(GameField, SecondSquareX, SecondSquareY);
+                                vec2 = DeleteCompletely(GameField, SecondSquareX, SecondSquareY);
 
+                            vec1.insert(vec1.end(), vec2.begin(), vec2.end());
                             wasClicked = false;
+                            
+                            return vec1;
                         }
                         else if (isEqual(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                             wasClicked = false;
@@ -258,6 +262,7 @@ namespace GameElements
             tempq.erase(tempq.begin());
             GameField[vec.x][vec.y].setFillColor(sf::Color::Black);
         }
+        
     }
 
 }
