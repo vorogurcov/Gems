@@ -29,6 +29,9 @@ namespace GameElements
 	void DestroySquare(std::vector<std::vector<Square>>& GameField, sf::Vector2i& pos);
 	void SwapSquares(std::vector<std::vector<Square>>& GameField, sf::Vector2i& pos1, sf::Vector2i& pos2);
 	void swap_bonuses(Square& s1, Square& s2);
+	std::vector<sf::Vector2i> ReleaseAllBonuses(std::vector<std::vector<Square>>& GameField, std::vector<std::pair<sf::Vector2i, sf::Vector2i>>& FromToPairs);
+	std::vector<std::pair<sf::Vector2i, sf::Vector2i>> RandomlyGenerateBonus(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& DeletedSquares);
+	bool isInVector(std::vector<std::pair<sf::Vector2i, sf::Vector2i>>& vec, sf::Vector2i& v);
 }
 
 

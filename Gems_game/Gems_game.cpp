@@ -2,7 +2,6 @@
 #include "GameFunctions.h"
 
 namespace ge = GameElements;
-    
 
 
 int main()
@@ -15,11 +14,14 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(800, 800), "Gems", sf::Style::Close);
    
-    
+    std::vector<std::pair<sf::Vector2i, sf::Vector2i>> FromToPairs;
+
+    std::vector<sf::Vector2i> DeletedSquares;
 
     while (window.isOpen())
     {
-        std::vector<sf::Vector2i> DeletedSquares;
+        
+        
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -39,6 +41,8 @@ int main()
                         DeletedSquares = ReplaceAndDeleteSquares(window, GameField, SquareX, SquareY);
                         
                         std::sort(DeletedSquares.begin(), DeletedSquares.end(), ge::compareByY);
+
+                        FromToPairs = RandomlyGenerateBonus(GameField, DeletedSquares);
 
                         isChanged = true;
                     }
@@ -60,12 +64,20 @@ int main()
             sf::sleep(tm);
 
             isChanged = false;
-
+            
             if (DeletedSquares.size() != 0)
             {
-                FillDeletedSquares(DeletedSquares,GameField);
+                FillDeletedSquares(DeletedSquares, GameField);
                 isChanged = true;
             }
+            else if (FromToPairs.size() != 0)
+            {
+                DeletedSquares = ReleaseAllBonuses(GameField, FromToPairs);
+                FromToPairs.clear();
+                isChanged = true;
+            }
+            else
+                isChanged = false;
         }
 
 

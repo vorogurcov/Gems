@@ -10,25 +10,8 @@
 #include <algorithm>
 namespace GameElements
 {
-	class Bonus
-	{
-	public:
-		virtual void ReleaseBonus();
-	};
-
-	class Bomb : public Bonus
-	{
-	public:
-		void ReleaseBonus();
-	};
-
-	class ReDrawer : public Bonus
-	{
-	public:
-		void ReleaseBonus();
-	};
-
-
+	
+	class Bonus;
 
 	class Square :public sf::RectangleShape
 	{
@@ -39,7 +22,34 @@ namespace GameElements
 		Square(float const size);
 		float GetSize() const;
 		~Square();
+		Bonus* GetBonus();
+		void SetBonus(Bonus* bns);
+		std::vector<sf::Vector2i> ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
 	};
+
+	class Bonus
+	{
+		friend std::vector<sf::Vector2i> Square::ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
+		private:
+		virtual std::vector<sf::Vector2i> ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos) = 0;
+	};
+
+	class Bomb : public Bonus
+	{
+		friend std::vector<sf::Vector2i> Square::ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
+	private:
+		std::vector<sf::Vector2i> ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
+	};
+
+	class ReDrawer : public Bonus
+	{
+		friend std::vector<sf::Vector2i> Square::ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
+	private:
+		std::vector<sf::Vector2i> ReleaseBonus(std::vector<std::vector<Square>>& GameField, sf::Vector2i& ToPos, sf::Vector2i& FromPos);
+	};
+
+
+	
 }
 #endif // !GAME_ELEMENTS_H
 

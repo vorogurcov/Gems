@@ -109,7 +109,7 @@ namespace GameElements
 
     std::vector<sf::Vector2i> ReplaceAndDeleteSquares(sf::RenderWindow& window,std::vector<std::vector<Square>>& GameField, int const FirstSquareX, int const FirstSquareY)
     {
-
+        std::vector<sf::Vector2i> vec1;
         bool wasClicked = true;
         while (wasClicked)
         {
@@ -129,13 +129,13 @@ namespace GameElements
                         int SecondSquareY = event.mouseButton.y / 80;
 
                         if (GameField[SecondSquareX][SecondSquareY].getFillColor() == sf::Color::Black)
-                            return *new std::vector<sf::Vector2i>(0);
+                            return vec1;
 
                         if (isNear(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
                         {
                             sf::Vector2i pos1(FirstSquareX,FirstSquareY), pos2(SecondSquareX,SecondSquareY);
                             SwapSquares(GameField, pos1, pos2);
-                            std::vector<sf::Vector2i> vec1, vec2;
+                            std::vector<sf::Vector2i>  vec2;
                             if(GameField[FirstSquareX][FirstSquareY].getFillColor() != sf::Color::Black)
                                 vec1 = DeleteCompletely(GameField, FirstSquareX, FirstSquareY);
                             if (GameField[SecondSquareX][SecondSquareY].getFillColor() != sf::Color::Black)
@@ -147,7 +147,10 @@ namespace GameElements
                             return vec1;
                         }
                         else if (isEqual(FirstSquareX, FirstSquareY, SecondSquareX, SecondSquareY))
+                        {
                             wasClicked = false;
+                            return vec1;
+                        }
                         else
                             wasClicked = true;
                     }
@@ -317,4 +320,96 @@ namespace GameElements
         swap_colors(GameField[pos1.x][pos1.y], GameField[pos2.x][pos2.y]);
         swap_bonuses(GameField[pos1.x][pos1.y], GameField[pos2.x][pos2.y]);
     }
+
+    bool isInVector(std::vector<std::pair<sf::Vector2i, sf::Vector2i>>& vec, sf::Vector2i& v)
+    {
+        for (auto& el : vec)
+        {
+            if (el.second == v)
+                return true;
+        }
+        return false;
+    }
+
+    std::vector<std::pair<sf::Vector2i, sf::Vector2i>> RandomlyGenerateBonus(std::vector<std::vector<Square>>& GameField, std::vector<sf::Vector2i>& DeletedSquares)
+    {
+        std::vector<std::pair<sf::Vector2i, sf::Vector2i>> res;
+        for (auto& vec : DeletedSquares)
+        {
+            int chance = rand() % 100;
+            if (chance <= 10)
+            {
+                sf::Vector2i toBePlaced(rand() % 2 + 2, rand() % 2 + 2);
+                bool canBeGenerated = false;
+                int tempx = vec.x, tempy = vec.y;
+                sf::Vector2i ToPos;
+                while (!canBeGenerated)
+                {
+                    tempx = vec.x;
+                    tempy = vec.y;
+
+                    int var = rand() % 4;
+                    switch (var)
+                    {
+                    case 0:
+                        tempx += toBePlaced.x;
+                        tempy += toBePlaced.y;
+                        canBeGenerated = (tempx < GameFieldSize && tempy < GameFieldSize);
+                        break;
+                    case 1:
+                        tempx += toBePlaced.x;
+                        tempy -= toBePlaced.y;
+                        canBeGenerated = (tempx < GameFieldSize && tempy >= 0);
+                        break;
+                    case 2:
+                        tempx -= toBePlaced.x;
+                        tempy += toBePlaced.y;
+                        canBeGenerated = (tempx >= 0 && tempy < GameFieldSize);
+                        break;
+                    case 3:
+                        tempx -= toBePlaced.x;
+                        tempy -= toBePlaced.y;
+                        canBeGenerated = (tempx >= 0 && tempy >= 0);
+                        break;
+                    }
+                    ToPos.x = tempx;
+                    ToPos.y = tempy;
+                    if (isInVector(res, ToPos))
+                        canBeGenerated = false;
+                }
+
+                res.push_back(std::make_pair(vec, ToPos));
+
+            }
+
+        }
+
+        for (auto& vec : res)
+        {
+            int BonusNumber = rand() % 2;
+
+            if (BonusNumber == 0)
+                GameField[vec.second.x][vec.second.y].SetBonus(new ReDrawer());
+            else
+                GameField[vec.second.x][vec.second.y].SetBonus(new Bomb());
+        }
+
+        return res;
+    }
+
+    std::vector<sf::Vector2i> ReleaseAllBonuses(std::vector<std::vector<Square>>& GameField, std::vector<std::pair<sf::Vector2i, sf::Vector2i>>& FromToPairs)
+    {
+        std::vector<sf::Vector2i> DeletedSquares;
+        for (auto& el : FromToPairs)
+        {
+            if (GameField[el.second.x][el.second.y].getFillColor() == sf::Color::Black && GameField[el.second.x][el.second.y].GetBonus() == NULL)
+                continue;
+            std::vector<sf::Vector2i> Deleted = GameField[el.second.x][el.second.y].ReleaseBonus(GameField, el.second, el.first);
+            DeletedSquares.insert(DeletedSquares.end(), Deleted.begin(), Deleted.end());
+        }
+        std::sort(DeletedSquares.begin(), DeletedSquares.end(), compareByY);
+        return DeletedSquares;
+    }
+
+
 }
